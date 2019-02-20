@@ -5,7 +5,7 @@ import math
 
 def callback(data):
     rospy.loginfo(math.log(data.data))
-    pub = rospy.Publisher('random_float_log',Float32)
+    pub = rospy.Publisher('random_float_log',Float32,queue_size=10)
 
 def alterer():
     rospy.init_node('simple_subscriber')

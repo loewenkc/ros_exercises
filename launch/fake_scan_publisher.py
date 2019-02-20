@@ -2,26 +2,25 @@
 import rospy
 from std_msgs.msg import Float32 
 import numpy
-#from sensor_msgs.msg import LaserScan
 from sensor_msgs.msg import LaserScan
 from math import pi
-#hdr = Header(Timestamp=rospy.Time.now(), Frame_id='base_link')
 
 def scanner():
     rospy.init_node('fake_scan_publisher')
     scan = LaserScan()
-    pub = rospy.Publisher('fake_scan',LaserScan,queue_size=10)
+    fp = rospy.get_param('/fpubt','fake_scan')
+    pub = rospy.Publisher(fp,LaserScan,queue_size=10)
     scan.header.frame_id="base_link"
     scan.header.stamp=rospy.Time.now()
-    rate = rospy.Rate(20)
+    ra = rospy.get_param('/r')
+    rate = rospy.Rate(ra)
     while not rospy.is_shutdown():
-        scan.angle_min = (-2.0/3.0)*pi
-        scan.angle_max = (2.0/3.0)*pi
-        scan.angle_increment = (1.0/300.0)*pi 
+        scan.angle_min = rospy.get_param('angle_min')
+        scan.angle_max = rospy.get_param('angle_max')
+        scan.angle_increment = rospy.get_param('angle_increment')
         scan.scan_time = 0.05 
-        scan.range_min = 1.0
-        scan.range_max = 10.0
-        #scan.ranges = numpy.linspace(1.0,10.0,400.0,endpoint=True)
+        scan.range_min = rospy.get_param('range_min')
+        scan.range_max = rospy.get_param('range_max')
         scan.ranges = numpy.random.uniform(scan.range_min,scan.range_max,400)
         pub.publish(scan)
         rospy.loginfo(scan)
